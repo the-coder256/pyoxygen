@@ -1,0 +1,8 @@
+STMT = | EXPR "(" EXPR ("," EXPR)* ")"
+       | NAME "=" EXPR
+
+EXPR = | INT
+       | FLOAT
+       | STRING
+       | NAME
+       | EXPR "(" EXPR ("," EXPR)* ")"
