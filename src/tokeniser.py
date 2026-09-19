@@ -22,9 +22,13 @@ class T_SingleEquals:
     def __init__(self, value): self.value = value
 class T_Comma:
     def __init__(self, value): self.value = value
+class T_LeftBrace:
+    def __init__(self, value): self.value = value
+class T_RightBrace:
+    def __init__(self, value): self.value = value
 
 keywords = [
-    # ...
+    "if", "else"
 ]
 
 class Tokeniser:
@@ -63,6 +67,10 @@ class Tokeniser:
             t_type = T_SingleEquals
         elif value == ",":
             t_type = T_Comma
+        elif value == "{":
+            t_type = T_LeftBrace    # does anyone even read this code?
+        elif value == "}":
+            t_type = T_RightBrace   # probably not (it may be just me for now and forever)
         elif value[0] in ["'", '"']:
             t_type = T_String
         elif value in keywords:
@@ -112,7 +120,7 @@ class Tokeniser:
                 in_string = 0
             elif in_string:
                 self.curr_tok += char
-            elif char == " ":
+            elif char in [" ", "\t"]:
                 self.append_token()
             elif char == "(":
                 self.append_token("(")
@@ -122,6 +130,10 @@ class Tokeniser:
                 self.append_token("=")
             elif char == ",":
                 self.append_token(",")
+            elif char == "{":
+                self.append_token("{")
+            elif char == "}":
+                self.append_token("}")
             else:
                 self.curr_tok += char
         self.append_token()
