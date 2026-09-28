@@ -1,6 +1,12 @@
 x = 7
+y = 4
+z = 6
 if x {
-    print("yes")
+    print("yes\n")
+} else if y {
+    print("maybe\n")
+} else if z {
+    print("whatever\n")
 } else {
-    print("no")
+    print("no\n")
 }

@@ -1,6 +1,6 @@
 STMT = | EXPR "(" EXPR ("," EXPR)* ")"
        | NAME "=" EXPR
-       | "if" EXPR "{" STMT* "}" ("else" "{" STMT* "}")?
+       | "if" EXPR "{" STMT* "}" ("else" "if" EXPR "{" STMT* "}")* ("else" "{" STMT* "}")?
 
 EXPR = | INT
        | FLOAT

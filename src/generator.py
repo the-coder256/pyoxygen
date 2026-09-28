@@ -26,7 +26,45 @@ class Generator:
         elif type(node) == parser.IfCondition:
             self.generate_from_expr(node.condition)
             self.bytecode += f"jump_if_false _l{self.label_num}\n"
-            if node.else_statements:
+            if node.elif_statements and not node.else_statements:
+                max_label = self.label_num + len(node.elif_statements)
+                for stmt in node.statements:
+                    self.generate_from_node(stmt)
+                self.bytecode += f"jump_label _l{max_label}\n"
+                self.bytecode += f"_l{self.label_num}:\n"
+                self.label_num += 1
+                for elseif in node.elif_statements:
+                    condition = elseif[0]
+                    statements = elseif[1]
+                    self.generate_from_expr(condition)
+                    self.bytecode += f"jump_if_false _l{self.label_num}\n"
+                    for elseif_stmt in node.statements:
+                        self.generate_from_node(elseif_stmt)
+                    self.bytecode += f"jump_label _l{max_label}\n"
+                    self.bytecode += f"_l{self.label_num}:\n"
+                    self.label_num += 1
+            elif node.elif_statements and node.else_statements:
+                max_label = self.label_num + len(node.elif_statements) + 1
+                for stmt in node.statements:
+                    self.generate_from_node(stmt)
+                self.bytecode += f"jump_label _l{max_label}\n"
+                self.bytecode += f"_l{self.label_num}:\n"
+                self.label_num += 1
+                for elseif in node.elif_statements:
+                    condition = elseif[0]
+                    statements = elseif[1]
+                    self.generate_from_expr(condition)
+                    self.bytecode += f"jump_if_false _l{self.label_num}\n"
+                    for elseif_stmt in statements:
+                        self.generate_from_node(elseif_stmt)
+                    self.bytecode += f"jump_label _l{max_label}\n"
+                    self.bytecode += f"_l{self.label_num}:\n"
+                    self.label_num += 1
+                for else_stmt in node.else_statements:
+                    self.generate_from_node(else_stmt)
+                self.bytecode += f"_l{self.label_num}:\n"
+                self.label_num += 1
+            elif node.else_statements:
                 for stmt in node.statements:
                     self.generate_from_node(stmt)
                 self.bytecode += f"jump_label _l{self.label_num + 1}\n"
